@@ -13,14 +13,14 @@ class Drawer {
 
     start() {
         this.clear();
-        const args = this.inputs.map(input => Number(input.value));
+        for (const key of Object.keys(this.inputs)) {
+            this.inputValues[key] = Number(this.inputs[key].value);
+        }
 
-        this.draw(...args);
+        this.draw();
     }
 
-    draw() {
-        console.log(arguments);
-    }
+    draw() {}
 
     clear() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -56,9 +56,18 @@ class Drawer {
     }
 }
 
-class Pifagor extends Drawer {
+class Lab1 extends Drawer {
     draw() {
-        this.pifagor(...arguments);
+        const {
+            n,
+            x0,
+            y0,
+            a,
+            fi,
+            alpha,
+        } = this.inputValues;
+
+        this.pifagor(n, x0, y0, a, fi, alpha);
     }
 
     pifagor(n, x0, y0, a, fi, alpha) {
@@ -83,9 +92,6 @@ class Pifagor extends Drawer {
         const leftLeg = Math.cos(alphaRadians) * a;
         const rightLeg = Math.sin(alphaRadians) * a;
 
-        console.log(leftLeg);
-        console.log(rightLeg)
-
         points.E = this.rotatePoint({ 
                 radians: alphaRadians,
                 pivot: points.B,
@@ -101,8 +107,6 @@ class Pifagor extends Drawer {
             });
         }
 
-        console.log(points)
-
         this.line(points.A, points.B);
         this.line(points.B, points.C);
         this.line(points.C, points.D);
@@ -111,20 +115,20 @@ class Pifagor extends Drawer {
         this.line(points.E, points.C);
 
         const bigHouseArgs = [
-            n - 1,            // n
+            n - 1,              // n
             points.B[0],        // x0
             points.B[1],        // y0
             leftLeg,            // a
-            fi + alpha,              // fi
+            fi + alpha,         // fi
             alpha,              // alpha
         ];
 
         const littleHouseArgs = [
-            n - 1,            // n
+            n - 1,              // n
             points.E[0],        // x0
             points.E[1],        // y0
             rightLeg,           // a
-            fi - antiAlpha,         // fi
+            fi - antiAlpha,     // fi
             alpha,              // alpha
         ];
 
@@ -142,16 +146,16 @@ function init() {
     const fiInput = document.getElementById('fi');
     const alphaInput = document.getElementById('alpha');
 
-    const drawer = new Pifagor(
+    const drawer = new Lab1(
         canvas, 
-        [
-            nInput,
-            x0Input,
-            y0Input,
-            aInput,
-            fiInput,
-            alphaInput,
-        ],
+        {
+            n: nInput,
+            x0: x0Input,
+            y0: y0Input,
+            a: aInput,
+            fi: fiInput,
+            alpha: alphaInput,
+        },
     );
 
     window.draw = () => drawer.start();
